@@ -1,0 +1,111 @@
+
+ADom(X):-occupation(X,Y).
+ADom(Y):-occupation(X,Y).
+
+ADom(X):-ActShape(X).
+ADom(X):-imdbId(X,Y).
+ADom(Y):-imdbId(X,Y).
+
+ADom(X):-director(X,Y).
+ADom(Y):-director(X,Y).
+
+ADom(X):-musicComposer(X,Y).
+ADom(Y):-musicComposer(X,Y).
+ADom(X):-birthPlace(X,Y).
+ADom(Y):-birthPlace(X,Y).
+
+ADom(X):-starring(X,Y).
+ADom(Y):-starring(X,Y).
+ADom(X):-writer(X,Y).
+ADom(Y):-writer(X,Y).
+
+
+ % <S11/1> <= (SOME <starring/2> IS <ActShape/1>)
+S11(X) :- Rel1(X,Y),Aux1(Y).
+Rel1(X,Y) :- starring(X,Y).
+Aux1(Y) :- ActShape(Y).
+ 
+
+ % <S10/1> <= (NOT <S12/1>)
+S10(X) :-ADom(X), not Aux2(X).
+Aux2(Y) :- S12(Y).
+ 
+
+ % <S12/1> <= (ATLEAST 2 OF <imdbId/2> ARE <ADom/1>)
+
+S12(X) :- AtLeast_2_imdbId_ADom(X,Y).
+AtLeast_0_imdbId_ADom(X,X) :- ADom(X). 
+AtLeast_1_imdbId_ADom(X,Y) :- First_imdbId(X,Y),ADom(Y).
+AtLeast_2_imdbId_ADom(X,Z) :- Next_imdbId(X,Y,Z), AtLeast_2_imdbId_ADom(X,Y). 
+AtLeast_2_imdbId_ADom(X,Z) :- Next_imdbId(X,Y,Z), AtLeast_1_imdbId_ADom(X,Y),ADom(Z), Y!=Z. 
+
+
+
+ 
+
+ % <S9/1> <= (ATLEAST 1 OF <imdbId/2> ARE <ADom/1>)
+
+S9(X) :- AtLeast_1_imdbId_ADom(X,Y).
+AtLeast_0_imdbId_ADom(X,X) :- ADom(X). 
+AtLeast_1_imdbId_ADom(X,Y) :- First_imdbId(X,Y),ADom(Y).
+
+
+
+ 
+
+ % <S8/1> <= (SOME <director/2> IS <ADom/1>)
+S8(X) :- Rel2(X,Y),Aux3(Y).
+Rel2(X,Y) :- director(X,Y).
+Aux3(Y) :- ADom(Y).
+ 
+
+ % <S7/1> <= (SOME <musicComposer/2> IS <ADom/1>)
+S7(X) :- Rel3(X,Y),Aux4(Y).
+Rel3(X,Y) :- musicComposer(X,Y).
+Aux4(Y) :- ADom(Y).
+ 
+
+ % <S6/1> <= (SOME <writer/2> IS <ADom/1>)
+S6(X) :- Rel4(X,Y),Aux5(Y).
+Rel4(X,Y) :- writer(X,Y).
+Aux5(Y) :- ADom(Y).
+ 
+
+ % <MovieShape/1> <= (AND <S6/1> (AND <S7/1> (AND <S8/1> (AND <S9/1> <S10/1>))))
+MovieShape(X) :- Aux6(X),Aux7(X).
+Aux6(Y) :- S6(Y).
+Aux7(X) :- Aux8(X),Aux9(X).
+Aux8(Y) :- S7(Y).
+Aux9(X) :- Aux10(X),Aux11(X).
+Aux10(Y) :- S8(Y).
+Aux11(X) :- Aux12(X),Aux13(X).
+Aux12(Y) :- S9(Y).
+Aux13(Y) :- S10(Y).
+ 
+
+ % <S5/1> <= (SOME <starring/2> IS <MovieShape/1>)
+S5(X) :- Rel5(X,Y),Aux14(Y).
+Rel5(Y,X) :- starring(X,Y).
+Aux14(Y) :- MovieShape(Y).
+ 
+
+ % <S3/1> <= (SOME <occupation/2> IS <Actor/1>)
+S3(X) :- Rel6(X).
+Rel6(X) :- occupation(X,actor).
+%Aux15(Y) :- Actor(Y).
+ 
+
+ % <S1/1> <= (SOME <birthPlace/2> IS <ADom/1>)
+S1(X) :- Rel7(X,Y),Aux16(Y).
+Rel7(X,Y) :- birthPlace(X,Y).
+Aux16(Y) :- ADom(Y).
+ 
+
+ % <ActShape/1> <= (AND <S1/1> (AND <S3/1> <S5/1>))
+ActShape(X) :- Aux17(X),Aux18(X).
+Aux17(Y) :- S1(Y).
+Aux18(X) :- Aux19(X),Aux20(X).
+Aux19(Y) :- S3(Y).
+Aux20(Y) :- S5(Y).
+ 
+%MovieShape(X)?

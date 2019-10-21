@@ -1,0 +1,76 @@
+
+ADom(X):-country(X,Y).
+ADom(Y):-country(X,Y).
+
+ADom(X):-occupation(X,Y).
+ADom(Y):-occupation(X,Y).
+
+ADom(X):-director(X,Y).
+ADom(Y):-director(X,Y).
+
+
+ADom(X):-birthPlace(X,Y).
+ADom(Y):-birthPlace(X,Y).
+
+ADom(X):-starring(X,Y).
+ADom(Y):-starring(X,Y).
+
+
+ % <S8/1> <= (NOT <MovieShape/1>)
+S8(X) :-ADom(X), not MovieShape(X).
+
+ 
+
+ % <DirectorShape/1> <= (SOME <director/2> IS <S8/1>)
+DirectorShape(X) :- Rel1(X,Y),Aux2(Y).
+Rel1(Y,X) :- director(X,Y).
+Aux2(Y) :- S8(Y).
+ 
+
+ % <S7/1> <= (SOME <director/2> IS <DirectorShape/1>)
+S7(X) :- Rel2(X,Y),Aux3(Y).
+Rel2(X,Y) :- director(X,Y).
+Aux3(Y) :- DirectorShape(Y).
+ 
+
+ % <S6/1> <= (SOME <starring/2> IS <ActShape/1>)
+S6(X) :- starring(X,Y),ActShape(Y).
+
+ 
+
+ % <MovieShape/1> <= (OR <S6/1> <S7/1>)
+MovieShape(X) :- S6(X).
+MovieShape(X) :- S7(X).
+
+ 
+
+ % <LocShape/1> <= (SOME <country/2> IS <ADom/1>)
+LocShape(X) :- Rel4(X,Y),Aux7(Y).
+Rel4(X,Y) :- country(X,Y).
+Aux7(Y) :- ADom(Y).
+ 
+
+ % <S5/1> <= (SOME <starring/2> IS <S8/1>)
+S5(X) :- Rel5(X,Y),Aux8(Y).
+Rel5(Y,X) :- starring(X,Y).
+Aux8(Y) :- S8(Y).
+ 
+
+ % <S3/1> <= (SOME <occupation/2> IS <Actor/1>)
+S3(X) :- Rel6(X).
+Rel6(X) :- occupation(X,actor).
+
+ 
+
+ % <S1/1> <= (SOME <birthPlace/2> IS <LocShape/1>)
+S1(X) :- Rel7(X,Y),Aux10(Y).
+Rel7(X,Y) :- birthPlace(X,Y).
+Aux10(Y) :- LocShape(Y).
+ 
+
+ % <ActShape/1> <= (AND <S1/1> (AND <S3/1> <S5/1>))
+ActShape(X) :- S1(X),S3(X), S5(X).
+
+ 
+
+%MovieShape(X)?
