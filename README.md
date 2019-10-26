@@ -1,42 +1,43 @@
-# shacl-asp
-Prototype translation from SHACL constraints into answer set programming (ASP).
+# Extended Version
+
+The extended verion can be found here: https://anonymousfiles.io/nxhY0JeR/
+
 
 # Building
 
-I used Maven. After a successful build the following file should appear:
+We used Maven and Java 1.8 and Jena TDB and ARQ for reading and tansforming RDF to ASP facts. To build run ```maven clean install```
 
-```./target/shacl-to-asp-1.0-SNAPSHOT.jar```
+After a successful build the following files should appear:
+
+```./target/shacl-to-asp.jar```
+```./target/rdf-to-asp.jar```
+```./target/valiate.jar```
+
 
 # Running the translation
 
+To obtain the ASP encoding of the SHACL constraints use: ```java -jar shacl-to-asp.jar constraint_file```.
+Here constraint_file is a file with  constraints in the abstract syntax (see below).
 
-You should make sure that DLV is in your PATH variable, so that we can run the 'dlv' command.
 
-You should make sure taht './bin' is in your PATH variable, so that we can run 'shacl-to-asp' and 'shacl-validate'.
+# Running the RDF to ASP facts translation
 
-The first program 'shacl-to-asp' executes a translation from SHACL constraints in an abstract syntax into a set of ASP rules. 
+We have used Jena TDB as data triples store to load each DBPedia dataset. To extract the ASP facts relevant to the SHACL constraints, run 
+```java -jar rdf-to-asp.jar constraints_file target programOutputFile factsOutputFile tdbFolder```
 
-You can run the translation by
+Again constraints_file is the SHACL constrains file (in abstract syntax) and target is the string denoting the target of interest: ```MovieShape(X)?```. 
+This will generate also the ASP program and put it into programOutputFile, while the targeted RDF triples are transformed into ASP facts and put into factsOutputFile. The ```tdbFolder```denotes the folder that Jena is using to store and read the RDF model. 
 
-```shacl-to-asp constraint_file```
 
-Here constraint_file is a file with  constraints in the abstract syntax.
+# Running the validator 
 
-You can test some example(s) by running
+To run the validator (tested only on MAC OS), make sure the 'dlv.bin' is in the same folder as 'validate.jar' and run 
+```java -jar validator.jar ASP_program_file ASP_facts_file sm|wf```. Option "sm" or "wf" is required to select the 2-valued (sm), respectively the 3-valued (wf) semantics. A file ```out.txt``` is then generated that contains the output of the solver. If errors occur, a file ```err.txt``` is generated. 
 
-```shacl-to-asp ex1.shacl```
+For the 2-valued semantics, a goal (e.g., MovieShape(X)?) in the ASP_program_file is required, while for the 3-valued (well-founded) semantics, no goal is required. 
 
-# Running the validator
-
-One can use 'shacl-validate' to validate a graph against some constraints and targets. Currently the classical brave ASP semantics is used.
- 
-```shacl-validate ex1.shacl ex1.graph ex1.target```
-
-The SHACL constraint file contains constrains as described below.
-
-The graph file is just a set of facts in the DLV syntax.
-
-The target file is just a comma-separated list of ground atoms in the DLV syntax.
+Alternatively, run the DLV solver ```dlv -brave -silent ASP_program_file ASP_facts_file```. For the 3-valued semantics, use 
+```dlv -wf -silent ASP_program_file ASP_facts_file```. 
 
 
 # Abstract Syntax
@@ -48,15 +49,16 @@ Each constraint is of the form
 'ShapeExpression' must obey the following grammar:
 
 ```
-ShapeExpression ::= NodeType | (ShapeExpression or ShapeExpression) | 
-                    (ShapeExpression and ShapeExpression) |
-                    (not ShapeExpression) | 
-                    (PathExpression only ShapeExpression) | 
-                    (PathExpression some ShapeExpression)
+ShapeExpression ::= NodeType | (ShapeExpression OR ShapeExpression) | 
+                    (ShapeExpression AND ShapeExpression) |
+                    (NOT ShapeExpression) | 
+                    (MIN n PathExpression)
+                    (PathExpression ONLY ShapeExpression) | 
+                    (PathExpression SOME ShapeExpression)
 
 PathExpression ::= PropertyName | 
-                  (PathExpression union PathExpression) | 
-                  (PathExpression conc PathExpression) | 
+                  (PathExpression UNION PathExpression) | 
+                  (PathExpression CONC PathExpression) | 
                   PathExpression*
 ```
 
