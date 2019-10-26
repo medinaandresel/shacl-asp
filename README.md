@@ -10,7 +10,9 @@ We used Maven and Java 1.8 and Jena TDB and ARQ for reading and tansforming RDF 
 After a successful build the following files should appear:
 
 ```./target/shacl-to-asp.jar```
+
 ```./target/rdf-to-asp.jar```
+
 ```./target/valiate.jar```
 
 
