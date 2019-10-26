@@ -1,0 +1,25 @@
+ActShape :- (S1 AND S3 AND S5);
+
+S1 :- (birthPlace SOME ADom);
+
+S3 :- (occupation SOME Actor);
+
+S5 :- (starring SOME MovieShape);
+
+MovieShape :- (S6 AND S7 AND S8 AND S9 AND S10);
+
+S6 :- (writer SOME ADom);
+
+S7 :- (musicComposer SOME ADom);
+
+S8 :- (director SOME ADom);
+
+S9 :- (MIN 1 imdbId ADom);
+
+S12 :- (MIN 2 imdbId ADom);
+
+S10 :- (NOT S12);
+
+S11 :- (starring SOME ActShape);
+
+

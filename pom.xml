@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>at.ac.tuwien.shacl</groupId>
+  <groupId>shacl-asp</groupId>
   <artifactId>shacl-to-asp</artifactId>
   <version>1.0-SNAPSHOT</version>
 
@@ -22,16 +22,69 @@
       </plugin>
     <plugin>
       <artifactId>maven-assembly-plugin</artifactId>
-      <configuration>
-        <archive>
-          <manifest>
-            <mainClass>main/java/at/ac/tuwien/shacl/Main</mainClass>
-          </manifest>
-        </archive>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-      </configuration>
+     <executions>
+     
+          <execution>
+            <id>build-a</id>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>shacl.Main</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <finalName>shacl-to-asp</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+            <goal>single</goal>
+          </goals>
+          </execution>
+          
+          <execution>
+            <id>build-b</id>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>rdf.TranslateRDF</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <finalName>rdf-to-asp</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+            <goal>single</goal>
+          </goals>
+          </execution>
+          
+           <execution>
+            <id>build-c</id>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>experim.Evaluation</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <finalName>validate</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+            <goal>single</goal>
+          </goals>
+          </execution>
+          
+        </executions>
     </plugin>
   </plugins>
 </build>
@@ -50,11 +103,11 @@
 <!--     <version>3.13.0</version> -->
 <!-- </dependency> -->
 <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq --> 
-<!-- <dependency> -->
-<!--     <groupId>org.apache.jena</groupId> -->
-<!--     <artifactId>jena-arq</artifactId> -->
-<!--     <version>3.13.0</version> -->
-<!-- </dependency> -->
+ <dependency>
+    <groupId>org.apache.jena</groupId> 
+     <artifactId>jena-arq</artifactId> 
+    <version>3.11.0</version> 
+ </dependency> 
 
 <!--  <dependency> -->
 <!--     <groupId>org.rdfhdt</groupId> -->
@@ -63,17 +116,17 @@
 <!--     <type>pom</type> -->
 <!-- </dependency>   -->
     <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-tdb -->
-<!-- <dependency> -->
-<!--     <groupId>org.apache.jena</groupId> -->
-<!--     <artifactId>jena-tdb</artifactId> -->
-<!--     <version>3.13.0</version> -->
-<!-- </dependency> -->
-<dependency>
+ <dependency> 
+     <groupId>org.apache.jena</groupId> 
+     <artifactId>jena-tdb</artifactId> 
+     <version>3.11.0</version> 
+ </dependency> 
+<!-- <dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
 			<type>pom</type>
 			<version>3.11.0</version>
-		</dependency>
+		</dependency> -->
     
   </dependencies>
 
