@@ -1,6 +1,6 @@
 # Extended Version
 
-The extended verion can be found here: https://anonymousfiles.io/nxhY0JeR/
+The extended version can be found here: https://anonymousfiles.io/nxhY0JeR/
 
 
 # Building
