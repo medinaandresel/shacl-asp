@@ -1,6 +1,4 @@
-# Extended Version
 
-The extended version can be found here: https://anonymousfiles.io/nxhY0JeR/
 
 
 # Building
